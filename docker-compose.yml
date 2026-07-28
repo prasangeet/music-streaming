@@ -1,15 +1,15 @@
+version: "3.9"
+
 services:
   postgres:
     image: postgres:17
-
     container_name: music-catalog-db
-
     restart: unless-stopped
 
     environment:
       POSTGRES_DB: music_catalog
       POSTGRES_USER: music_user
-      POSTGRES_PASSWORD: music_password
+      POSTGRES_PASSWORD: password
 
     ports:
       - "5432:5432"
@@ -23,5 +23,38 @@ services:
       timeout: 5s
       retries: 5
 
+    networks:
+      - music-catalog-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+
+    container_name: music-catalog-backend
+
+    restart: unless-stopped
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    env_file:
+      - ./backend/.env
+
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+
+    ports:
+      - "8080:8080"
+
+    networks:
+      - music-catalog-network
+
 volumes:
   postgres_data:
+
+networks:
+  music-catalog-network:
+    driver: bridge

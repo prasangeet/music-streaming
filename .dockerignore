@@ -31,3 +31,12 @@ Thumbs.db
 
 # Documentation
 README.md
+
+target
+.git
+.gitignore
+.idea
+.vscode
+.zed
+*.iml
+README.md
