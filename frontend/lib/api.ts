@@ -1,9 +1,9 @@
 import axios, { AxiosError } from "axios";
 
-export const BASE_API_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080/api";
+export const BACKEND_ORIGIN =
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
 
-export const BACKEND_ORIGIN = new URL("/", BASE_API_URL).origin;
+export const BASE_API_URL = `${BACKEND_ORIGIN}/api`;
 
 interface ApiErrorResponse {
   message?: string;
@@ -39,14 +39,12 @@ api.interceptors.response.use(
       console.error("Data:", error.response.data);
       console.error("Headers:", error.response.headers);
 
-      const { message, error: errorMessage } =
-        error.response.data ?? {};
+      const data = error.response.data;
 
-      if (message || errorMessage) {
-        error.message =
-          message ??
-          errorMessage ??
-          error.message;
+      if (data?.message) {
+        error.message = data.message;
+      } else if (data?.error) {
+        error.message = data.error;
       }
     } else if (error.request) {
       console.error("No response received:", error.request);
