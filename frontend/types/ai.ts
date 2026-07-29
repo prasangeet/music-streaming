@@ -5,3 +5,12 @@ export interface AlbumInsightsResponse {
   recommendedFor: string[];
   similarArtists: string[];
 }
+
+export interface LibraryInsightsResponse {
+  summary: string;
+  dominantGenres: string[];
+  listeningPersonality: string[];
+  trendHighlights: string[];
+  recommendations: string[];
+  discoverySuggestions: string[];
+}

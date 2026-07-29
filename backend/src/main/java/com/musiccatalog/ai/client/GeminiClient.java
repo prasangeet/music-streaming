@@ -1,6 +1,7 @@
 package com.musiccatalog.ai.client;
 
 import com.musiccatalog.ai.dto.AlbumInsightsResponse;
+import com.musiccatalog.ai.dto.LibraryInsightsResponse;
 
 public interface GeminiClient {
 
@@ -9,4 +10,6 @@ public interface GeminiClient {
             String artist,
             String genre
     );
+
+    LibraryInsightsResponse generateLibraryInsights(String librarySnapshot);
 }

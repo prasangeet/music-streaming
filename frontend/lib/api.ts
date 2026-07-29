@@ -1,7 +1,9 @@
 import axios, { AxiosError } from "axios";
 
-const BASE_API_URL =
+export const BASE_API_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080/api";
+
+export const BACKEND_ORIGIN = new URL("/", BASE_API_URL).origin;
 
 interface ApiErrorResponse {
   message?: string;

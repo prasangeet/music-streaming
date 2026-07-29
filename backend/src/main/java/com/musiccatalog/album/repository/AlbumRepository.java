@@ -3,6 +3,7 @@ package com.musiccatalog.album.repository;
 import com.musiccatalog.album.entity.Album;
 
 import com.musiccatalog.user.entity.User;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +15,8 @@ public interface AlbumRepository extends
         JpaSpecificationExecutor<Album> {
 
     Page<Album> findAllByUser(User user, Pageable pageable);
+
+    List<Album> findAllByUser(User user);
 
     Optional<Album> findByIdAndUser(Long id, User user);
 

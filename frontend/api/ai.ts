@@ -1,5 +1,5 @@
 import { api } from "@/lib/api";
-import { AlbumInsightsResponse } from "@/types";
+import { AlbumInsightsResponse, LibraryInsightsResponse } from "@/types";
 
 export const getAlbumInsights = async (
   albumId: number
@@ -19,6 +19,14 @@ export const refreshAlbumInsights = async (
     await api.post<AlbumInsightsResponse>(
       `/ai/albums/${albumId}/insights/refresh`
     );
+
+  return data;
+};
+
+export const generateLibraryInsights = async (): Promise<LibraryInsightsResponse> => {
+  const { data } = await api.post<LibraryInsightsResponse>(
+    "/ai/library/insights"
+  );
 
   return data;
 };

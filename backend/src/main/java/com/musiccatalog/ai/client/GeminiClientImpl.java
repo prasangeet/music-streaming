@@ -5,6 +5,7 @@ import com.google.genai.Client;
 import com.google.genai.types.GenerateContentConfig;
 import com.google.genai.types.GenerateContentResponse;
 import com.musiccatalog.ai.dto.AlbumInsightsResponse;
+import com.musiccatalog.ai.dto.LibraryInsightsResponse;
 import com.musiccatalog.ai.prompt.PromptBuilder;
 import com.musiccatalog.common.exception.ai.AIException;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,19 @@ public class GeminiClientImpl implements GeminiClient {
                 genre
         );
 
+        return generateJsonResponse(prompt, AlbumInsightsResponse.class);
+    }
+
+    @Override
+    public LibraryInsightsResponse generateLibraryInsights(String librarySnapshot) {
+
+        String prompt = PromptBuilder.libraryInsightsPrompt(librarySnapshot);
+
+        return generateJsonResponse(prompt, LibraryInsightsResponse.class);
+    }
+
+    private <T> T generateJsonResponse(String prompt, Class<T> responseType) {
+
         GenerateContentConfig config = GenerateContentConfig.builder()
                 .responseMimeType("application/json")
                 .build();
@@ -56,10 +70,7 @@ public class GeminiClientImpl implements GeminiClient {
         log.debug("Gemini JSON response:\n{}", json);
 
         try {
-            return objectMapper.readValue(
-                    json,
-                    AlbumInsightsResponse.class
-            );
+            return objectMapper.readValue(json, responseType);
         } catch (Exception ex) {
             log.error("Failed to parse Gemini response:\n{}", json, ex);
             throw new AIException(

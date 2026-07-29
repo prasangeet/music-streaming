@@ -22,9 +22,18 @@
 
 The project is intentionally split into:
 
-- `backend/` — Java 21 + Spring Boot REST API
-- `frontend/` — Next.js + React dashboard UI
+- `backend/` — Java 21 + Spring Boot REST API deployed on **Render**
+- `frontend/` — Next.js + React dashboard UI deployed on **Vercel**
 - `docker-compose.yml` — local PostgreSQL, backend, and frontend orchestration
+
+### 🔗 Live Deployment
+
+| Service | URL |
+|---|---|
+| Frontend | [https://trackio-tau.vercel.app](https://trackio-tau.vercel.app/) |
+| Backend API | [https://trackio-backend-mar0.onrender.com](https://trackio-backend-mar0.onrender.com) |
+| OpenAPI Docs | [https://trackio-backend-mar0.onrender.com/v3/api-docs](https://trackio-backend-mar0.onrender.com/v3/api-docs) |
+| Database | Neon PostgreSQL |
 
 ---
 
@@ -140,8 +149,10 @@ Insights can be fetched from the saved album record or refreshed on demand.
 
 | Area | Technology |
 |---|---|
-| Database | PostgreSQL 17 |
+| Database | PostgreSQL 17 locally, Neon PostgreSQL in production |
 | Containers | Docker + Docker Compose |
+| Backend Hosting | Render |
+| Frontend Hosting | Vercel |
 | Backend Runtime | Eclipse Temurin Java 21 |
 | Frontend Runtime | Node 22 Alpine |
 
@@ -191,7 +202,7 @@ music-streaming/
 
 ### Database choice: **PostgreSQL**
 
-PostgreSQL was chosen because it is reliable, widely supported by Spring Data JPA, easy to run locally through Docker, and well-suited for relational user-owned library data.
+PostgreSQL was chosen because it is reliable, widely supported by Spring Data JPA, easy to run locally through Docker, and well-suited for relational user-owned library data. The deployed production database is hosted on **Neon PostgreSQL**.
 
 The application stores **only the user’s saved library**, not the entire third-party catalog.
 
@@ -510,13 +521,13 @@ npm run format
 
 ## 🌐 Deployment
 
-Suggested deployment split:
+The application is deployed with a managed full-stack setup:
 
-| Layer | Option |
-|---|---|
-| Frontend | Vercel / Netlify |
-| Backend | Render / Railway / AWS / Fly.io |
-| Database | Railway PostgreSQL / Render PostgreSQL / Supabase / Neon |
+| Layer | Provider | URL / Notes |
+|---|---|---|
+| Frontend | Vercel | [https://trackio-tau.vercel.app](https://trackio-tau.vercel.app/) |
+| Backend | Render | [https://trackio-backend-mar0.onrender.com](https://trackio-backend-mar0.onrender.com) |
+| Database | Neon | Managed PostgreSQL database |
 
 ### Deployment environment variables
 
@@ -536,16 +547,16 @@ GOOGLE_API_KEY=
 Frontend:
 
 ```env
-NEXT_PUBLIC_API_URL=https://your-backend-domain.com/api
+NEXT_PUBLIC_API_URL=https://trackio-backend-mar0.onrender.com/api
 ```
 
 ### Live links
 
-> Replace these once deployed.
-
-- Frontend: `TODO: add deployed frontend URL`
-- Backend API: `TODO: add deployed backend URL`
-- Swagger/OpenAPI: `TODO: add deployed Swagger URL if exposed`
+- Frontend: [https://trackio-tau.vercel.app](https://trackio-tau.vercel.app/)
+- Backend API: [https://trackio-backend-mar0.onrender.com](https://trackio-backend-mar0.onrender.com)
+- API Base URL: [https://trackio-backend-mar0.onrender.com/api](https://trackio-backend-mar0.onrender.com/api)
+- OpenAPI JSON: [https://trackio-backend-mar0.onrender.com/v3/api-docs](https://trackio-backend-mar0.onrender.com/v3/api-docs)
+- Database: Neon PostgreSQL
 
 ---
 
@@ -583,7 +594,7 @@ Suggested screenshots:
 | Loading/empty states | ✅ | Search, library, analytics, AI states |
 | At least 4 charts | ✅ | Donut, horizontal bar, release bar, rating histogram |
 | AI feature | ✅ | Gemini-powered album insights |
-| Deployment | ⏳ | Deployment URLs to be added |
+| Deployment | ✅ | Frontend on Vercel, backend on Render, database on Neon |
 | README | ✅ | This file |
 | Good to have: pagination | ✅ | Saved library pagination |
 | Good to have: API docs | ✅ | OpenAPI/Swagger |
@@ -621,4 +632,6 @@ Suggested screenshots:
 Built as a full-stack take-home assignment for the **Music Catalog Insights Platform** prompt.
 
 - GitHub Repository: `TODO: add GitHub repository URL`
-- Live Demo: `TODO: add live deployment URL`
+- Live Demo: [https://trackio-tau.vercel.app](https://trackio-tau.vercel.app/)
+- Backend API: [https://trackio-backend-mar0.onrender.com](https://trackio-backend-mar0.onrender.com)
+- Database: Neon PostgreSQL

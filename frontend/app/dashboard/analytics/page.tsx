@@ -37,6 +37,7 @@ import {
   BarChart3,
   ChevronRight,
   Loader2,
+  Sparkles,
 } from "lucide-react";
 import {
   Breadcrumb,
@@ -51,6 +52,7 @@ import {
   ArtistAnalyticsResponse,
   ReleaseYearAnalyticsResponse,
   RatingAnalyticsResponse,
+  LibraryInsightsResponse,
   ApiError,
 } from "@/types";
 import {
@@ -58,6 +60,7 @@ import {
   getArtistAnalytics,
   getReleaseAnalytics,
   getRatingAnalytics,
+  generateLibraryInsights,
 } from "@/api";
 import { removeToken } from "@/lib/auth";
 import { toast } from "sonner";
@@ -148,7 +151,11 @@ function AnalyticsContent() {
   const [artists, setArtists] = useState<ArtistAnalyticsResponse[]>([]);
   const [releases, setReleases] = useState<ReleaseYearAnalyticsResponse[]>([]);
   const [ratings, setRatings] = useState<RatingAnalyticsResponse[]>([]);
+  const [libraryInsights, setLibraryInsights] =
+    useState<LibraryInsightsResponse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isGeneratingInsights, setIsGeneratingInsights] =
+    useState<boolean>(false);
 
   const rawTab = searchParams.get("tab")?.toLowerCase();
   const validTabs: TabType[] = ["genres", "artists", "releases", "ratings"];
@@ -199,6 +206,23 @@ function AnalyticsContent() {
       router.push(pathname);
     } else {
       router.push(`${pathname}?tab=${tab}`);
+    }
+  };
+
+  const handleGenerateLibraryInsights = async () => {
+    try {
+      setIsGeneratingInsights(true);
+      const insights = await generateLibraryInsights();
+      setLibraryInsights(insights);
+      toast.success("AI library insights generated.");
+    } catch (error: unknown) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to generate AI library insights."
+      );
+    } finally {
+      setIsGeneratingInsights(false);
     }
   };
 
@@ -299,6 +323,98 @@ function AnalyticsContent() {
           )}
         </div>
       </div>
+
+      {/* AI Library Insights */}
+      <Card className="border-2 border-border shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-[var(--chart-4)]/10">
+        <CardHeader className="p-5 border-b-2 border-border">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <CardTitle className="font-heading uppercase text-lg flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-main" /> AI Library Insights
+              </CardTitle>
+              <CardDescription className="font-base text-xs mt-1">
+                Generate a qualitative trend summary from your saved albums, ratings, genres, artists, and release eras.
+              </CardDescription>
+            </div>
+            <Button
+              variant="default"
+              size="sm"
+              onClick={handleGenerateLibraryInsights}
+              disabled={isGeneratingInsights}
+              className="font-heading uppercase text-xs border-2 border-border shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] shrink-0"
+            >
+              {isGeneratingInsights ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Sparkles className="w-4 h-4" />
+              )}
+              {libraryInsights ? "Refresh Insights" : "Generate Insights"}
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent className="p-5">
+          {libraryInsights ? (
+            <div className="space-y-5">
+              <div className="p-4 border-2 border-border rounded-base bg-background shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                <h3 className="font-heading uppercase text-xs text-muted-foreground mb-2">
+                  AI Summary
+                </h3>
+                <p className="font-base text-sm leading-relaxed">
+                  {libraryInsights.summary}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                {[
+                  ["Dominant Genres", libraryInsights.dominantGenres],
+                  ["Listening Personality", libraryInsights.listeningPersonality],
+                  ["Trend Highlights", libraryInsights.trendHighlights],
+                  ["Recommendations", libraryInsights.recommendations],
+                  ["Discovery Suggestions", libraryInsights.discoverySuggestions],
+                ].map(([title, items]) => (
+                  <div
+                    key={title as string}
+                    className="p-4 border-2 border-border rounded-base bg-background min-h-36"
+                  >
+                    <h3 className="font-heading uppercase text-xs mb-3">
+                      {title as string}
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {(items as string[]).length > 0 ? (
+                        (items as string[]).map((item, index) => (
+                          <Badge
+                            key={`${title}-${index}`}
+                            variant="neutral"
+                            className="font-base text-xs border border-border whitespace-normal text-left"
+                          >
+                            {item}
+                          </Badge>
+                        ))
+                      ) : (
+                        <p className="font-base text-xs text-muted-foreground">
+                          No insight generated for this category.
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center text-center py-8 border-2 border-dashed border-border rounded-base bg-background gap-3">
+              <Sparkles className="w-10 h-10 text-main" />
+              <div className="space-y-1 max-w-lg">
+                <p className="font-heading uppercase text-sm">
+                  Generate AI-powered analytics from your saved library
+                </p>
+                <p className="font-base text-xs text-muted-foreground leading-relaxed">
+                  This summarizes your catalog patterns beyond charts: dominant styles, listening personality, release-era trends, and discovery recommendations.
+                </p>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Analytics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
