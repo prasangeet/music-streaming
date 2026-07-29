@@ -32,7 +32,6 @@ services:
       dockerfile: Dockerfile
 
     container_name: music-catalog-backend
-
     restart: unless-stopped
 
     depends_on:
@@ -48,6 +47,26 @@ services:
 
     ports:
       - "8080:8080"
+
+    networks:
+      - music-catalog-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+
+    container_name: music-catalog-frontend
+    restart: unless-stopped
+
+    depends_on:
+      - backend
+
+    environment:
+      NEXT_PUBLIC_API_URL: http://backend:8080/api
+
+    ports:
+      - "3000:3000"
 
     networks:
       - music-catalog-network
