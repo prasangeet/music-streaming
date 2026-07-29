@@ -38,7 +38,7 @@ export default function DashboardLayout({
         setUser(currentUser);
       } catch (error: unknown) {
         const err = error as AxiosError<ApiError>;
-        if (err.response?.status === 401) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
           removeToken();
           toast.error("Your session has expired. Please login again.");
           router.replace("/login");
