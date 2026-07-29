@@ -36,15 +36,16 @@ export default function DashboardLayout({
       try {
         const currentUser = await getCurrentUser();
         setUser(currentUser);
-      } catch (error: unknown) {
-        const err = error as AxiosError<ApiError>;
-        if (err.response?.status === 401 || err.response?.status === 403) {
-          removeToken();
-          toast.error("Your session has expired. Please login again.");
-          router.replace("/login");
-          return;
+        setIsLoading(false);
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          if (error.response?.status === 401 || error.response?.status === 403) {
+            removeToken();
+            router.replace("/login");
+            return;
+          }
         }
-      } finally {
+
         setIsLoading(false);
       }
     };

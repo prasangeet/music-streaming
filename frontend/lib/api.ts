@@ -18,13 +18,12 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token =
-    typeof window !== "undefined"
-      ? localStorage.getItem("token")
-      : null;
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("token");
 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
   }
 
   return config;
@@ -43,24 +42,18 @@ api.interceptors.response.use(
       const { message, error: errorMessage } =
         error.response.data ?? {};
 
-      return Promise.reject(
-        new Error(
+      if (message || errorMessage) {
+        error.message =
           message ??
           errorMessage ??
-          "Something went wrong."
-        )
-      );
-    }
-
-    if (error.request) {
+          error.message;
+      }
+    } else if (error.request) {
       console.error("No response received:", error.request);
-
-      return Promise.reject(
-        new Error("Unable to connect to the server.")
-      );
+      error.message = "Unable to connect to the server.";
+    } else {
+      console.error("Request setup error:", error.message);
     }
-
-    console.error("Request setup error:", error.message);
 
     return Promise.reject(error);
   }
