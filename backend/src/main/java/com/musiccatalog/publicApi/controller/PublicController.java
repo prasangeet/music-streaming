@@ -1,4 +1,4 @@
-package com.musiccatalog.publicapi.controller;
+package com.musiccatalog.publicApi.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
