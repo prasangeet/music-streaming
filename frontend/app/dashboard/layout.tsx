@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/sidebar";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Loader2 } from "lucide-react";
-import { CurrentUserResponse, ApiError } from "@/types";
+import { CurrentUserResponse } from "@/types";
 import { getCurrentUser } from "@/api";
 import { removeToken } from "@/lib/auth";
 import { toast } from "sonner";
